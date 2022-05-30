@@ -1,5 +1,29 @@
 const inquirer = require('inquirer');
 
+const fs = require('fs');
+const generatePage = require('./src/page-template.js');
+// const pageHTML = generatePage(name,github);
+
+ //const printProfileData = profileDataArr => {
+//     for (let i = 0; i < profileDataArr.length; i++) {
+//         console.log(profileDataArr[i]);
+//     }
+//      IS THE SAME AS
+// profileDataArr.forEach((profileItem) => {
+//     console.log(profileItem)
+// }); Can also be written with no parenthesis in parameter and no curly bracets
+// profileDataArr.forEach(profileItem =>console.log(profileItem));
+// };
+// printProfileData(profileDataArgs);
+// const generatePage = (userName, githubName) => `Name: ${userName}, Github: ${githubName}`;
+
+//           name           data                   callback function
+// fs.writeFile('./index.html', pageHTML, err => {
+//     if(err) throw err;
+
+//     console.log('Portfolio complete! Check out index.html to see the output!');
+// });
+
 const promptUser = () => {
     return inquirer.prompt ([
         {
@@ -36,7 +60,7 @@ const promptUser = () => {
         },
         {
             type: 'input',
-            name: 'about',
+            name: 'about', //templateData.about
             message: 'Provide some information about yourself:',
             when: ({confirmAbout}) => {
                 if (confirmAbout) {
@@ -53,7 +77,7 @@ const promptProject = portfolioData => {//<-a parameter that will store the proj
     // If there's no 'projects' array property, create one; would essentially erase all the project data we collected. 
     //We want this expression to occur on the first pass only.
     if (!portfolioData.projects) {
-        portfolioData.projects = [];
+        portfolioData.projects = []; //pageTemplate.projects
     }
     console.log('============Add a New Project==============');
     return inquirer.prompt ([
@@ -84,12 +108,12 @@ const promptProject = portfolioData => {//<-a parameter that will store the proj
             }
         },
         {
-            type: 'input',
+            type: 'checkbox',
             name: 'languages',
-            message: 'What did you build this project with? (Check all that apply)',
-            choices: ['Javascript', 'HTML', 'CSS', 'ES6', 'jQuery', 'Bootstrap', 'Node']
-        },
-        {
+            message: 'What did you this project with? (Check all that apply)',
+            choices: ['JavaScript', 'HTML', 'CSS', 'ES6', 'jQuery', 'Bootstrap', 'Node']
+          },
+          {
             type: 'input',
             name: 'link',
             message: 'Enter the Github link to your project. (Required)',
@@ -135,29 +159,11 @@ const promptProject = portfolioData => {//<-a parameter that will store the proj
     promptUser()
     .then(promptProject)
     .then(portfolioData => {
-        console.log(portfolioData);
+//the expression that invokes the generatePage() with portfolioData and uses the result from our inquirer prompts as an argument called portfolioData.
+        const pageHTML = generatePage(portfolioData);
+
+        fs.writeFile('./index.html', pageHTML, err => {
+            if (err) throw new Error(err);
+            console.log('Page created! Check out index.html in this directory to see it!');
+        })
     });
-
-// const fs = require('fs');
-// const generatePage = require('./src/page-template.js');
-// const pageHTML = generatePage(name,github);
-
- //const printProfileData = profileDataArr => {
-//     for (let i = 0; i < profileDataArr.length; i++) {
-//         console.log(profileDataArr[i]);
-//     }
-//      IS THE SAME AS
-// profileDataArr.forEach((profileItem) => {
-//     console.log(profileItem)
-// }); Can also be written with no parenthesis in parameter and no curly bracets
-// profileDataArr.forEach(profileItem =>console.log(profileItem));
-// };
-// printProfileData(profileDataArgs);
-// const generatePage = (userName, githubName) => `Name: ${userName}, Github: ${githubName}`;
-
-//           name           data                   callback function
-// fs.writeFile('./index.html', pageHTML, err => {
-//     if(err) throw err;
-
-//     console.log('Portfolio complete! Check out index.html to see the output!');
-// });
