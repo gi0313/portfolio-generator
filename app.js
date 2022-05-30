@@ -159,11 +159,36 @@ const promptProject = portfolioData => {//<-a parameter that will store the proj
     promptUser()
     .then(promptProject)
     .then(portfolioData => {
-//the expression that invokes the generatePage() with portfolioData and uses the result from our inquirer prompts as an argument called portfolioData.
-        const pageHTML = generatePage(portfolioData);
-
-        fs.writeFile('./index.html', pageHTML, err => {
-            if (err) throw new Error(err);
-            console.log('Page created! Check out index.html in this directory to see it!');
-        })
+        return generatePage(portfolioData);
+    })
+    .then(pageHTML => {
+        return fs.writeFile(pageHTML);
+    })
+    .then(writeFileResponse => {
+        console.log(writeFileResponse);
+        return fs.copyFile();
+    })
+    .then(copyFileResponse => {
+        console.log(copyFileResponse);
+    })
+    .catch(err => {
+        console.log(err);
     });
+//the expression that invokes the generatePage() with portfolioData and uses the result from our inquirer prompts as an argument called portfolioData.
+        // const pageHTML = generatePage(portfolioData);
+
+        // fs.writeFile('./dist/index.html', pageHTML, err => {
+        //     if (err) {
+        //         console.log(err);
+        //         return;
+        //     }
+        //     console.log('Page created! Check out index.html in this directory to see it!');
+        // fs.copyFile('./src/style.css', './dist/style.css', err => {
+        //     if (err) {
+        //         console.log(err);
+        //         return;
+        //     }
+        //     console.log('Style Sheet copied successfully!');
+//we wait for confirmation that the .writeFile() method ran successfully. When we get that confirmation, which in this case simply means not receiving an error, we then execute the .copyFile() method. 
+//It isn't mandatory for the application to work, but it does make the application run its functions one at a time, making it easier for us to track what's going on when.
+    
